@@ -73,28 +73,20 @@
     <!-- Pantalla 2 -->
     <section class="body" id="pantalla2" hidden>
       <h1>Tus datos</h1>
-      <p class="lead">Ingres&aacute; tu correo y la contrase&ntilde;a que te entregamos.</p>
+      <p class="lead">Complet&aacute; tus datos para conectarte.</p>
       <form id="form">
-        <label for="email">Correo electr&oacute;nico</label>
-        <input id="email" name="email" type="email" autocomplete="email" inputmode="email" />
-
-        <label for="password">Contrase&ntilde;a de acceso</label>
-        <input id="password" name="password" type="password" autocomplete="off" />
-        <div class="hint">La clave que te dieron en recepci&oacute;n.</div>
-
         <label for="nombre">Nombre</label>
-        <input id="nombre" name="nombre" type="text" autocomplete="given-name" />
+        <input id="nombre" name="nombre" type="text" autocomplete="given-name" required />
 
         <label for="apellido">Apellido</label>
-        <input id="apellido" name="apellido" type="text" autocomplete="family-name" />
+        <input id="apellido" name="apellido" type="text" autocomplete="family-name" required />
 
-        <label for="telefono">Tel&eacute;fono <span style="font-weight:400;color:var(--gris)">(opcional)</span></label>
-        <input id="telefono" name="telefono" type="tel" autocomplete="tel" placeholder="+54 9 261 ..." />
+        <label for="email">Correo electr&oacute;nico</label>
+        <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required />
 
-        <div class="check">
-          <input id="terminos" name="terminos" type="checkbox" />
-          <span>Acepto el uso de mis datos seg&uacute;n la <a href="https://www.aden.org" target="_blank" rel="noopener">pol&iacute;tica de privacidad</a> de ADEN.</span>
-        </div>
+        <label for="password">Contrase&ntilde;a</label>
+        <input id="password" name="password" type="password" autocomplete="off" required />
+        <div class="hint">La clave que te dieron en recepci&oacute;n.</div>
 
         <button id="btnEnviar" type="submit">Conectarme</button>
         <div class="msg" id="msg"></div>
@@ -120,7 +112,7 @@
     var p2 = document.getElementById('pantalla2');
     document.getElementById('btnComenzar').addEventListener('click', function(){
       p1.hidden = true; p2.hidden = false;
-      document.getElementById('email').focus();
+      document.getElementById('nombre').focus();
     });
 
     var form = document.getElementById('form');
@@ -138,9 +130,7 @@
         nombre:   document.getElementById('nombre').value.trim(),
         apellido: document.getElementById('apellido').value.trim(),
         email:    document.getElementById('email').value.trim(),
-        telefono: document.getElementById('telefono').value.trim(),
         password: document.getElementById('password').value,
-        terminos: document.getElementById('terminos').checked,
         id: unifi.id, ap: unifi.ap, ssid: unifi.ssid, url: unifi.url, t: unifi.t
       };
 
