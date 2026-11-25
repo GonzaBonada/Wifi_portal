@@ -24,11 +24,7 @@ export default async function handler(req, res) {
   // El body ya viene parseado por Vercel cuando el content-type es JSON.
   const b = typeof req.body === 'object' && req.body ? req.body : {};
 
-  // Validaciones mínimas
-  if (!b.email || !b.password || !b.id) {
-    return res.status(400).json({ ok: false, error: 'Faltan datos obligatorios.' });
-  }
-
+  // Sin campos obligatorios: se envía solo lo que la persona haya cargado.
   const payload = {
     nombre: (b.nombre || '').toString().slice(0, 120),
     apellido: (b.apellido || '').toString().slice(0, 120),
