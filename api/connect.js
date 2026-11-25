@@ -8,6 +8,9 @@
 //   FALLBACK_URL      (opcional) A dónde redirigir si UniFi no mandó 'url'.
 //                     Por defecto https://www.aden.org
 
+// Dar tiempo a que el flujo de n8n (login UniFi + authorize + Sheet) responda.
+export const config = { maxDuration: 30 };
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Método no permitido' });
@@ -41,7 +44,7 @@ export default async function handler(req, res) {
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 12000);
+    const timer = setTimeout(() => controller.abort(), 27000);
 
     const r = await fetch(webhook, {
       method: 'POST',
