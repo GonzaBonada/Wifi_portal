@@ -1,0 +1,546 @@
+{
+  "name": "Portal WiFi ADEN (webhook + Vercel)",
+  "nodes": [
+    {
+      "id": "ad6f74b6-a0fa-4a43-a5e4-afc928156186",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "e419bb10-ab25-4b3a-bdfa-1fc64b639ad1",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wifi-portal",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "a36222c5-502c-4337-969f-7cadf224b89b",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b80e3043-fc91-479a-8432-5d3372da6b67",
+              "name": "unifiUrl",
+              "type": "string",
+              "value": "https://192.168.250.251:11443"
+            },
+            {
+              "id": "e26e5e73-f3e9-4783-8baf-93207179ec73",
+              "name": "unifiSite",
+              "type": "string",
+              "value": "default"
+            },
+            {
+              "id": "0b1b656b-3301-43f7-acfe-8327f2777874",
+              "name": "unifiUser",
+              "type": "string",
+              "value": "portal-wifi"
+            },
+            {
+              "id": "6bf5165e-100f-4580-82b9-16cfbcbf23d0",
+              "name": "unifiPass",
+              "type": "string",
+              "value": "CAMBIAR_password"
+            },
+            {
+              "id": "18618149-35cf-4081-9277-0672d4a5ca05",
+              "name": "minutos",
+              "type": "number",
+              "value": 480
+            },
+            {
+              "id": "edf4427d-a102-44e3-8db7-36d3301cc601",
+              "name": "urlFallback",
+              "type": "string",
+              "value": "https://www.aden.org"
+            },
+            {
+              "id": "5cba3aa8-eeae-422b-8587-3a4520d94f53",
+              "name": "codigoEntregado",
+              "type": "string",
+              "value": "CAMBIAR_clave_que_entregas"
+            },
+            {
+              "id": "73843066-0502-4eae-a06e-723f553377a4",
+              "name": "secretEsperado",
+              "type": "string",
+              "value": "CAMBIAR_secreto_webhook"
+            },
+            {
+              "id": "85edeeb9-68ad-4b7a-9350-5e65d7e628f0",
+              "name": "secretRecibido",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.headers['x-portal-secret'] || '' }}"
+            },
+            {
+              "id": "99b6b462-d49a-47f0-b110-b3e54b2833ce",
+              "name": "mac",
+              "type": "string",
+              "value": "={{ ($('Webhook').item.json.body.id || '').toLowerCase().trim() }}"
+            },
+            {
+              "id": "c5708338-8f7a-4753-aa26-9dc526508756",
+              "name": "ap",
+              "type": "string",
+              "value": "={{ ($('Webhook').item.json.body.ap || '').toLowerCase() }}"
+            },
+            {
+              "id": "32d369b4-a20b-4a8c-9b52-d8699879cdbf",
+              "name": "ssid",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.ssid || '' }}"
+            },
+            {
+              "id": "1597ae79-8a51-4383-924b-088bafb8c9a7",
+              "name": "url",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.url || '' }}"
+            },
+            {
+              "id": "8697fdd8-7564-4f02-bba0-184427eaf6ab",
+              "name": "nombre",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.nombre || '' }}"
+            },
+            {
+              "id": "315deead-ab71-45eb-9d4b-6e9563079ec8",
+              "name": "apellido",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.apellido || '' }}"
+            },
+            {
+              "id": "7d5bf3c3-d7d7-42ac-8fb7-a6503e35e632",
+              "name": "email",
+              "type": "string",
+              "value": "={{ ($('Webhook').item.json.body.email || '').toLowerCase().trim() }}"
+            },
+            {
+              "id": "1c79c01a-a5d3-412d-871e-ed140d3c9823",
+              "name": "telefono",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.telefono || '' }}"
+            },
+            {
+              "id": "90926a12-e223-4888-8131-15e5758d0d86",
+              "name": "terminos",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.terminos ? 'SI' : 'NO' }}"
+            },
+            {
+              "id": "765cbece-563a-4748-a482-a6f27b11e15c",
+              "name": "passIngresada",
+              "type": "string",
+              "value": "={{ $('Webhook').item.json.body.password || '' }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e449ad02-568d-40f3-a869-a8162821f96f",
+      "name": "Secreto válido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "ecd504b0-e590-473b-813f-2ed4305dddc3",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.secretRecibido }}",
+              "rightValue": "={{ $json.secretEsperado }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "1fffed18-f1ec-4d9a-a0a7-2dbab836e8df",
+      "name": "Login UniFi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        -100
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Config').item.json.unifiUrl }}/api/auth/login",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ username: $('Config').item.json.unifiUser, password: $('Config').item.json.unifiPass, remember: false }) }}",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "timeout": 10000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "6c3b6042-c8e3-4237-ba04-e044b4f9588a",
+      "name": "Extraer sesión",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -100
+      ],
+      "parameters": {
+        "jsCode": "const h = $json.headers || {};\nlet cookies = h['set-cookie'] || [];\nif (!Array.isArray(cookies)) cookies = [cookies];\nconst cookie = cookies.map(c => c.split(';')[0]).join('; ');\nreturn [{ json: { cookie, csrf: h['x-csrf-token'] || '' } }];"
+      }
+    },
+    {
+      "id": "55149e5d-03e3-4f55-b601-eff38685bf61",
+      "name": "Autorizar invitado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        -100
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Config').item.json.unifiUrl }}/proxy/network/api/s/{{ $('Config').item.json.unifiSite }}/cmd/stamgr",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Cookie",
+              "value": "={{ $json.cookie }}"
+            },
+            {
+              "name": "X-CSRF-Token",
+              "value": "={{ $json.csrf }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ cmd: 'authorize-guest', mac: $('Config').item.json.mac, minutes: $('Config').item.json.minutos, ap_mac: $('Config').item.json.ap || undefined }) }}",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "6a27e9cc-eda3-4513-b213-f2b560e56960",
+      "name": "Guardar en Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1320,
+        -100
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1184yH4WLTklKzE_D6UYNEpol9wI76x83oie5yR-fTeY",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Registros",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha y hora": "={{ $now.setZone('America/Argentina/Mendoza').toFormat('dd/MM/yyyy HH:mm:ss') }}",
+            "Nombre": "={{ $('Config').item.json.nombre }}",
+            "Apellido": "={{ $('Config').item.json.apellido }}",
+            "Email": "={{ $('Config').item.json.email }}",
+            "Teléfono": "={{ $('Config').item.json.telefono }}",
+            "Acepta términos": "={{ $('Config').item.json.terminos }}",
+            "MAC cliente": "={{ $('Config').item.json.mac }}",
+            "MAC AP": "={{ $('Config').item.json.ap }}",
+            "SSID": "={{ $('Config').item.json.ssid }}",
+            "Autorizado": "={{ $json.meta && $json.meta.rc === 'ok' ? 'SI' : 'ERROR' }}",
+            "Contraseña ingresada": "={{ $('Config').item.json.passIngresada }}",
+            "Coincide con la entregada": "={{ ($('Config').item.json.passIngresada || '').trim() === ($('Config').item.json.codigoEntregado || '').trim() ? 'SI' : 'NO' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha y hora",
+              "displayName": "Fecha y hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Apellido",
+              "displayName": "Apellido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Teléfono",
+              "displayName": "Teléfono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Acepta términos",
+              "displayName": "Acepta términos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "MAC cliente",
+              "displayName": "MAC cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "MAC AP",
+              "displayName": "MAC AP",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "SSID",
+              "displayName": "SSID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Autorizado",
+              "displayName": "Autorizado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contraseña ingresada",
+              "displayName": "Contraseña ingresada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Coincide con la entregada",
+              "displayName": "Coincide con la entregada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "id": "0efa4247-dcbb-43dd-a686-e79473e976e5",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        -100
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, autorizado: ($json.meta && $json.meta.rc === 'ok'), redirect: ($('Config').item.json.url || '').startsWith('http') ? $('Config').item.json.url : $('Config').item.json.urlFallback }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "61c4afc2-fcc6-4f10-ab3a-9b76154e2989",
+      "name": "Responder no autorizado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        120
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'No autorizado' }) }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Secreto válido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Secreto válido": {
+      "main": [
+        [
+          {
+            "node": "Login UniFi",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder no autorizado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login UniFi": {
+      "main": [
+        [
+          {
+            "node": "Extraer sesión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer sesión": {
+      "main": [
+        [
+          {
+            "node": "Autorizar invitado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Autorizar invitado": {
+      "main": [
+        [
+          {
+            "node": "Guardar en Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar en Sheet": {
+      "main": [
+        [
+          {
+            "node": "Responder OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WiFi ADEN</title>
+<style>
+  :root{
+    --rojo:#BE1D15;
+    --rojo-oscuro:#A01810;
+    --negro:#1D1D18;
+    --gris:#6B6B66;
+    --fondo:#F4F4F2;
+    --borde:#E2E2DE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--fondo);
+    color:var(--negro);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px 16px calc(24px + env(safe-area-inset-bottom));
+    line-height:1.45;
+  }
+  .card{
+    width:100%;max-width:420px;background:#fff;border:1px solid var(--borde);
+    border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(29,29,24,.08);
+  }
+  .top{padding:28px 26px 18px;border-bottom:3px solid var(--rojo)}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand .mark{font-weight:800;letter-spacing:.14em;font-size:26px;color:var(--negro)}
+  .brand .sub{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--rojo);font-weight:700}
+  .body{padding:24px 26px 28px}
+  h1{font-size:21px;line-height:1.25;margin-bottom:8px}
+  p.lead{color:var(--gris);font-size:15px;margin-bottom:22px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+  input,select{
+    width:100%;padding:12px 13px;font-size:16px;border:1px solid var(--borde);
+    border-radius:10px;background:#fff;color:var(--negro);font-family:inherit;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--rojo);box-shadow:0 0 0 3px rgba(190,29,21,.12)}
+  .hint{font-size:12px;color:var(--gris);margin-top:5px}
+  .check{display:flex;gap:10px;align-items:flex-start;margin-top:18px}
+  .check input{width:18px;height:18px;margin-top:2px;flex:0 0 auto;accent-color:var(--rojo)}
+  .check span{font-size:13px;color:var(--gris)}
+  .check a{color:var(--rojo)}
+  button{
+    width:100%;margin-top:22px;padding:14px;font-size:16px;font-weight:700;
+    color:#fff;background:var(--rojo);border:none;border-radius:10px;cursor:pointer;
+    font-family:inherit;transition:background .15s;
+  }
+  button:hover{background:var(--rojo-oscuro)}
+  button:disabled{opacity:.6;cursor:default}
+  .msg{margin-top:16px;font-size:14px;padding:12px 13px;border-radius:10px;display:none}
+  .msg.err{display:block;background:#fdecea;color:#8a1711;border:1px solid #f5c6c2}
+  .msg.ok{display:block;background:#eaf6ec;color:#1d5b2a;border:1px solid #c6e6cd}
+  .foot{padding:14px 26px 22px;font-size:11px;color:var(--gris);text-align:center}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="top">
+      <div class="brand"><span class="mark">ADEN</span><span class="sub">Red de invitados</span></div>
+    </div>
+
+    <!-- Pantalla 1 -->
+    <section class="body" id="pantalla1">
+      <h1>Ayudanos a mejorar nuestra red</h1>
+      <p class="lead">Complet&aacute; un paso m&aacute;s y en segundos quedás conectado al WiFi de ADEN.</p>
+      <button id="btnComenzar" type="button">Comenzar</button>
+    </section>
+
+    <!-- Pantalla 2 -->
+    <section class="body" id="pantalla2" hidden>
+      <h1>Tus datos</h1>
+      <p class="lead">Ingres&aacute; tu correo y la contrase&ntilde;a que te entregamos.</p>
+      <form id="form">
+        <label for="email">Correo electr&oacute;nico</label>
+        <input id="email" name="email" type="email" autocomplete="email" required inputmode="email" />
+
+        <label for="password">Contrase&ntilde;a de acceso</label>
+        <input id="password" name="password" type="password" autocomplete="off" required />
+        <div class="hint">La clave que te dieron en recepci&oacute;n.</div>
+
+        <label for="nombre">Nombre</label>
+        <input id="nombre" name="nombre" type="text" autocomplete="given-name" required />
+
+        <label for="apellido">Apellido</label>
+        <input id="apellido" name="apellido" type="text" autocomplete="family-name" required />
+
+        <label for="telefono">Tel&eacute;fono <span style="font-weight:400;color:var(--gris)">(opcional)</span></label>
+        <input id="telefono" name="telefono" type="tel" autocomplete="tel" placeholder="+54 9 261 ..." />
+
+        <div class="check">
+          <input id="terminos" name="terminos" type="checkbox" required />
+          <span>Acepto el uso de mis datos seg&uacute;n la <a href="https://www.aden.org" target="_blank" rel="noopener">pol&iacute;tica de privacidad</a> de ADEN.</span>
+        </div>
+
+        <button id="btnEnviar" type="submit">Conectarme</button>
+        <div class="msg" id="msg"></div>
+      </form>
+    </section>
+
+    <div class="foot">ADEN &middot; Mendoza</div>
+  </main>
+
+<script>
+  (function(){
+    var qs = new URLSearchParams(location.search);
+    // Parámetros que manda UniFi al portal externo
+    var unifi = {
+      id:   qs.get('id')   || '',   // MAC del cliente
+      ap:   qs.get('ap')   || '',   // MAC del AP
+      ssid: qs.get('ssid') || '',
+      url:  qs.get('url')  || '',   // sitio que la persona quería abrir
+      t:    qs.get('t')    || ''
+    };
+
+    var p1 = document.getElementById('pantalla1');
+    var p2 = document.getElementById('pantalla2');
+    document.getElementById('btnComenzar').addEventListener('click', function(){
+      p1.hidden = true; p2.hidden = false;
+      document.getElementById('email').focus();
+    });
+
+    var form = document.getElementById('form');
+    var btn  = document.getElementById('btnEnviar');
+    var msg  = document.getElementById('msg');
+
+    function showMsg(text, kind){ msg.className = 'msg ' + kind; msg.textContent = text; }
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      msg.className = 'msg';
+      btn.disabled = true; btn.textContent = 'Conectando...';
+
+      var payload = {
+        nombre:   document.getElementById('nombre').value.trim(),
+        apellido: document.getElementById('apellido').value.trim(),
+        email:    document.getElementById('email').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        password: document.getElementById('password').value,
+        terminos: document.getElementById('terminos').checked,
+        id: unifi.id, ap: unifi.ap, ssid: unifi.ssid, url: unifi.url, t: unifi.t
+      };
+
+      try{
+        var r = await fetch('/api/connect', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        var data = await r.json().catch(function(){ return {}; });
+
+        if(r.ok && data.ok){
+          showMsg('Listo, ya estás conectado. Redirigiendo...', 'ok');
+          var dest = data.redirect || unifi.url || 'https://www.aden.org';
+          setTimeout(function(){ location.href = dest; }, 1200);
+        } else {
+          btn.disabled = false; btn.textContent = 'Conectarme';
+          showMsg(data.error || 'No pudimos conectarte. Verific&aacute; la contrase&ntilde;a e intent&aacute; de nuevo.', 'err');
+        }
+      } catch(err){
+        btn.disabled = false; btn.textContent = 'Conectarme';
+        showMsg('Hubo un problema de conexi&oacute;n. Intent&aacute; nuevamente.', 'err');
+      }
+    });
+  })();
+</script>
+</body>
+</html>
